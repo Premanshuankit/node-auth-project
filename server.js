@@ -10,22 +10,28 @@ const routerEmployees = require('./routes/api/employees')
 const corsOptions = require('./config/corsOptions')
 const routerRegister = require('./routes/api/register')
 const routerAuth = require('./routes/api/auth')
+const verifyJwt = require('./middleware/verifyJWT')
+const cookieParser = require('cookie-parser')
 
 app.use(express.urlencoded({ extended: false}))
+// custom middleware
+app.use(logger)
+app.use(cors(corsOptions));
 app.use(express.json())
+// middleware for cookis
+app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/subdir', express.static(path.join(__dirname, '/public')))
 
 app.use('/', routerRoot)
 app.use('/subdir', routerSubdir)
-app.use('/employees', routerEmployees)
 app.use('/register', routerRegister)
 app.use('/auth', routerAuth)
 
-// custom middleware
-app.use(logger)
+app.use(verifyJwt)
+app.use('/employees', routerEmployees)
 
-app.use(cors(corsOptions));
+
 
 // routes handlers / middleware
 app.get(/hello(.html)?/, (req, res, next) => {
