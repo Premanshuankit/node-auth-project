@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -15,6 +16,11 @@ const cookieParser = require('cookie-parser')
 const credentials = require('./middleware/credentials')
 const routerRefresh = require('./routes/api/refresh')
 const routerLogout = require('./routes/api/logout')
+const mongoose = require('mongoose')
+const connectDB = require('./config/dbConn')
+
+// connect to DB
+connectDB()
 
 app.use(express.urlencoded({ extended: false}))
 // custom middleware
@@ -83,6 +89,10 @@ app.all(/.*/, (req, res) => {
 app.use(errorHandlers)
 
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
-    console.log(`listening to port ${PORT}`)
+mongoose.connection.once('open', () => {
+    console.log('connected to DB from server.js')
+
+    app.listen(PORT, () => {
+        console.log(`listening to port ${PORT}`)
+    })
 })
