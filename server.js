@@ -12,10 +12,14 @@ const routerRegister = require('./routes/api/register')
 const routerAuth = require('./routes/api/auth')
 const verifyJwt = require('./middleware/verifyJWT')
 const cookieParser = require('cookie-parser')
+const credentials = require('./middleware/credentials')
+const routerRefresh = require('./routes/api/refresh')
+const routerLogout = require('./routes/api/logout')
 
 app.use(express.urlencoded({ extended: false}))
 // custom middleware
 app.use(logger)
+app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.json())
 // middleware for cookis
@@ -27,6 +31,8 @@ app.use('/', routerRoot)
 app.use('/subdir', routerSubdir)
 app.use('/register', routerRegister)
 app.use('/auth', routerAuth)
+app.use('/refresh', routerRefresh)
+app.use('/logout', routerLogout)
 
 app.use(verifyJwt)
 app.use('/employees', routerEmployees)
