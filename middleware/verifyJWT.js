@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const verifyJwt = ( req, res, next) => {
-    const authHeader = req.headers['authorization']
-    if (!authHeader) {
+    const authHeader = req.headers.Authorization || req.headers.authorization
+    if (!authHeader?.startsWith('Bearer ')) {
         return res.sendStatus(401).send('unauthorised access!!')
     }
     console.log(authHeader)
@@ -15,7 +15,8 @@ const verifyJwt = ( req, res, next) => {
             if (err) {
                 return res.sendStatus(403).send('invalid token')
             }
-            req.user = decoded.username
+            req.user = decoded.UserInfo.username
+            req.roles = decoded.UserInfo.roles
             next()
         }
     )
