@@ -6,18 +6,9 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     roles: {
-        User: {
-            type: Number,
-            default: 2001
-        },
-        Editor: {
-            type: Number,
-            default: 1984
-        },
-        Admin: {
-            type: Number,
-            default: 5150
-        }
+        type: Map,
+        of: Number,
+        default: { User: 2001 }
     },
     password: {
         type: String,
@@ -26,6 +17,9 @@ const userSchema = new mongoose.Schema({
     refreshToken: {
         type: String
     }
+}, {
+    toJSON: { flattenMaps: true },
+    toObject: { flattenMaps: true }
 })
 
 const userModel = mongoose.model('User', userSchema)
