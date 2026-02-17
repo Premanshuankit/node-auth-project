@@ -9,10 +9,10 @@ const handleNewUser = async (req, res) => {
         return res.status(400).send('username and pwd are required')
     }
     // check the duplicate user in the DB
-    const duplicate = await User.findOne({ username: user}).exec()
-    if (duplicate) {
-        return res.status(409).send('username already exist, please try with another username')
-    }
+    // const duplicate = await User.findOne({ username: user}).exec()
+    // if (duplicate) {
+    //     return res.status(409).send('username already exist, please try with another username')
+    // }
 
     try {
         const hashedPwd = await bcrypt.hash(pwd, 10)
@@ -41,6 +41,9 @@ const handleNewUser = async (req, res) => {
         res.status(201).send(`user with name '${user}' was created!!!`)
 
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ message: 'Username already exists!!!!!!!' });
+        }
         res.status(500).send(error.message)
     }
 }
